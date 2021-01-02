@@ -1,0 +1,28 @@
+{
+  "name": "OC 年度总结",
+  "description" : "生成今年的OC年报",
+  "version": "1.0",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "SJTU.png"
+  },
+
+  "icons": {
+    "16": "Radium.png",
+    "48": "Radium.png",
+    "128": "Radium.png"
+  },
+
+  "homepage_url": "http://www.fgb2019.top",
+
+  "content_scripts": [
+    {
+      "matches": ["https://*.sjtu.edu.cn/*","http://*.sjtu.edu.cn/*"],
+      "js": ["jquery.min.js", "md5.js", "get_user_info.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "permissions": [  "tabs"]
+}

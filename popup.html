@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        body{
+            width: 300px;
+        }
+        button {
+            height: 30px;
+            outline: none;
+        }
+        .selected{
+            background: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<center><h6>用户须知</h6>
+    <span>本插件将收集您的页面信息。本插件<strong>不保证</strong>您的信息安全，<strong>无法承诺</strong>不滥用您的信息！</span>
+    <br>
+<button id="accept">同意</button>
+<button id="decline">拒绝</button>
+    <br>
+    <span style="color: red; display: none" id="tip">正在收集信息...</span>
+    <div id="qrcode" style="display: none"></div>
+</center>
+<script src="jquery.min.js"></script>
+<script src="qrcode.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
