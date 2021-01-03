@@ -2,13 +2,14 @@
 let courses;
 let groups;
 let user_id;
+let ddls = {9:[],10:[],11:[],12:[],1:[]};
 
 // 设置popup 操作的响应
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse){
         if(request.action === "collect"){
             collect();
-            sendResponse({user_id: user_id, courses: courses, groups: groups});
+            sendResponse({user_id: user_id, courses: courses, groups: groups, ddls: ddls});
             return true;
         }
     }
@@ -77,6 +78,15 @@ function parseAssignment(course_id, data, courses){
 
 }
 
+function parseDDLs(data, ddls){
+    for (const datum of data) {
+        let date = new Date(datum.end_at);
+        ddls[date.getMonth() + 1].push({
+            name: datum.title
+        });
+    }
+}
+
 function collect(){
     // 用户名
     $.ajax({
@@ -119,8 +129,10 @@ function collect(){
         }
     });
 
+    let courseIds = [];
     // 作业
     for (const course of courses) {
+        courseIds.push("course_" + course.id);
         $.ajax({
             url: "https://oc.sjtu.edu.cn/api/v1/courses/" + course.id + "/assignment_groups?include%5B%5D=assignments&include%5B%5D" +
                 "=discussion_topic&exclude_response_fields%5B%5D=description&exclude_response_fields%5B%5D=rubric&" +
@@ -134,13 +146,29 @@ function collect(){
                 parseAssignment(course.id, data, courses);
             }
         });
+
     }
 
-
-
-    chrome.runtime.sendMessage({action: "send", user_id: user_id, courses: courses, groups: groups} ,function (response){
-        console.log(response);
+    // DDL
+    $.ajax({
+        url: "https://oc.sjtu.edu.cn/api/v1/calendar_events?type=assignment" ,
+        type: "get",
+        data: {
+            type: "assignment",
+            context_codes: courseIds,
+            start_date: "2020-09-01T16:00:00.000Z",
+            end_date: "2021-01-31T16:00:00.000Z",
+            per_page: 200
+        },
+        async: false,
+        success: function (data){
+            parseDDLs(data, ddls);
+        }, error: function (data){
+            data = JSON.parse(data.responseText.substring(9));
+            parseDDLs(data, ddls);
+        }
     });
+
 
 
     // $.ajax({

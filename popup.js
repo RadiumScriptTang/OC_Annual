@@ -38,7 +38,8 @@ document.getElementById("accept").addEventListener("click", function (event){
                     user_id: response.user_id,
                     course: JSON.stringify({
                         courses: response.courses,
-                        groups: response.groups
+                        groups: response.groups,
+                        ddls: response.ddls
                     })
                 },
                 async: false,
